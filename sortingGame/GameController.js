@@ -1,6 +1,6 @@
 /**
  * GameController.js
- * * This version centralizes all gaze logic and handles final logging requirements.
+ * * This version captures and logs specific reveal and drop timestamps.
  */
 
 import { DataManager } from './DataManager.js';
@@ -116,6 +116,10 @@ export class GameController {
 
         this.uiManager.revealCard(cardEl, this.currentCard.question);
         
+        // --- THIS IS THE CHANGE ---
+        // Capture the reveal timestamp and store it on the card object.
+        this.currentCard.timestamp_reveal = new Date().toISOString();
+        
         const correctDirection = this.currentCard.correctAnswer ? 'left' : 'right';
         let finalGazeDirection = 'none';
 
@@ -128,7 +132,6 @@ export class GameController {
         }
         
         this.currentCard.gazeDirection = finalGazeDirection;
-        console.log(`[DEBUG] Gaze direction for this trial is: ${this.currentCard.gazeDirection}`);
 
         if (window.gcs && finalGazeDirection !== 'none') {
             window.gcs.triggerInitiatingJointAttention(finalGazeDirection);
@@ -140,16 +143,23 @@ export class GameController {
         if (!this.currentCard) return;
 
         if (side) {
-            // Loggen nur im Hauptspiel
+            // --- THIS IS THE CHANGE ---
+            // Capture the drop timestamp.
+            const timestamp_drop = new Date().toISOString();
+
+            // Log only in the main game.
             if (this.gameState === 'PLAYING_MAIN') {
                 logger.log('cardDrop', {
                     participantId: this.participantId,
                     condition: this.currentCondition ? this.currentCondition.condition_name : 'N/A',
                     question: this.currentCard.question,
-                    difficulty: this.currentCard.difficulty, // NEU
+                    difficulty: this.currentCard.difficulty,
                     correctAnswer: this.currentCard.correctAnswer,
                     choice: side,
-                    robots_gaze_direction: this.currentCard.gazeDirection || 'none'
+                    robots_gaze_direction: this.currentCard.gazeDirection || 'none',
+                    // Add both timestamps to the log payload.
+                    timestamp_reveal: this.currentCard.timestamp_reveal,
+                    timestamp_drop: timestamp_drop
                 });
             }
 
@@ -169,7 +179,6 @@ export class GameController {
         const lastGameType = this.gameState;
         this.setGameState('FINISHED_ROUND');
 
-        // Loggen des Rundenendes nur für das Hauptspiel
         if (lastGameType === 'PLAYING_MAIN') {
             logger.log('roundOver', {
                 participantId: this.participantId,
