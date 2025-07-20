@@ -7,18 +7,17 @@ import os
 
 # --- Configuration ---
 LOG_FILE = 'experiment_log.csv'
-# --- HIER IST DIE ÄNDERUNG: Neue Spalte hinzugefügt ---
+# --- THIS IS THE CHANGE: Updated header columns ---
 CSV_HEADER = [
-    'server_timestamp',
-    'client_timestamp',
     'participant_id',
-    'event_type',
     'robot_condition',
     'card_question',
-    'difficulty',           # NEU
+    'difficulty',
     'correct_side',
     'participant_choice',
-    'robots_gaze_direction'
+    'robots_gaze_direction',
+    'timestamp_reveal',
+    'timestamp_drop'
 ]
 
 def initialize_csv():
@@ -36,28 +35,28 @@ async def log_handler(websocket, path):
         async for message in websocket:
             try:
                 data = json.loads(message)
-                event_type = data.get('event')
                 payload = data.get('payload', {})
                 
-                # --- HIER IST DIE ÄNDERUNG: Datenfeld wird ausgelesen ---
+                # --- THIS IS THE CHANGE: Map new data fields ---
                 log_entry = {
-                    'server_timestamp': datetime.now().isoformat(),
-                    'client_timestamp': data.get('timestamp_client'),
                     'participant_id': payload.get('participantId'),
-                    'event_type': event_type,
                     'robot_condition': payload.get('condition'),
                     'card_question': payload.get('question'),
-                    'difficulty': payload.get('difficulty'), # NEU
+                    'difficulty': payload.get('difficulty'),
                     'correct_side': 'left' if payload.get('correctAnswer') else 'right',
                     'participant_choice': payload.get('choice'),
-                    'robots_gaze_direction': payload.get('robots_gaze_direction')
+                    'robots_gaze_direction': payload.get('robots_gaze_direction'),
+                    'timestamp_reveal': payload.get('timestamp_reveal'),
+                    'timestamp_drop': payload.get('timestamp_drop')
                 }
 
-                with open(LOG_FILE, 'a', newline='', encoding='utf-8') as f:
-                    writer = csv.DictWriter(f, fieldnames=CSV_HEADER)
-                    writer.writerow(log_entry)
-                
-                print(f"Logged event: {event_type} for participant {payload.get('participantId')}")
+                # We only want to log the full trial data, not other events
+                if data.get('event') == 'cardDrop':
+                    with open(LOG_FILE, 'a', newline='', encoding='utf-8') as f:
+                        writer = csv.DictWriter(f, fieldnames=CSV_HEADER)
+                        writer.writerow(log_entry)
+                    
+                    print(f"Logged cardDrop for participant {payload.get('participantId')}")
 
             except json.JSONDecodeError:
                 print(f"Error: Received non-JSON message: {message}")
