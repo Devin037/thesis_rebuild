@@ -1,0 +1,47 @@
+[
+  {
+    "condition_name": "Ryan",
+    "initiatingJointAttention": true,
+    "gaze_validity": 1.00,
+    "picture": "gcs/robot_faces/Robot9.png",
+    "eye_config": {
+      "container_top": "50%",
+      "container_margin_top": "-40px",
+      "gap": "70px",
+      "eye_width": "104px",
+      "eye_height": "84px",
+      "pupil_width": "36px",
+      "pupil_height": "36px"
+    }
+  },
+  {
+    "condition_name": "Ivan",
+    "initiatingJointAttention": true,
+    "gaze_validity": 0.01,
+    "picture": "gcs/robot_faces/Robot11.png",
+    "eye_config": {
+      "container_top": "52%",
+      "container_margin_top": "-45px",
+      "gap": "75px",
+      "eye_width": "110px",
+      "eye_height": "90px",
+      "pupil_width": "40px",
+      "pupil_height": "40px"
+    }
+  },
+  {
+    "condition_name": "Carl",
+    "initiatingJointAttention": false,
+    "gaze_validity": 1.0,
+    "picture": "gcs/robot_faces/Robot12.png",
+    "eye_config": {
+      "container_top": "48%",
+      "container_margin_top": "-35px",
+      "gap": "65px",
+      "eye_width": "100px",
+      "eye_height": "80px",
+      "pupil_width": "34px",
+      "pupil_height": "34px"
+    }
+  }
+]

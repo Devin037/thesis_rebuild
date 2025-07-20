@@ -1,0 +1,383 @@
+/* --- Global & Layout --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
+    background-color: #ccc; /* Unified background color */
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* --- Gaze Control System (GCS) Section --- */
+#gcs-container {
+    height: 65vh;
+    position: relative; /* This is crucial for positioning child elements */
+    overflow: hidden;
+    box-sizing: border-box;
+    background-color: #ccc;
+    
+    /* Image properties */
+    background-size: contain; /* Use 'contain' to ensure the whole image fits */
+    background-position: center bottom; /* Position the image at the bottom */
+    background-repeat: no-repeat;
+    /*transition: background-image 0.5s ease-in-out;*/
+}
+
+#robotNameHeadline {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    font-size: 1.8rem;
+    color: #333;
+    z-index: 10;
+}
+
+.eyes-container {
+    /* Set to absolute to layer it on top of the background */
+    position: absolute; 
+    display: flex;
+    gap: 70px; /* Adjusted gap */
+
+    /* Center the container horizontally and position it vertically */
+    left: 50%;
+    top: 50%; /* Adjusted vertical position. Fine-tune this value! */
+    transform: translate(-50%, -50%);
+    
+    /* Remove the old margin */
+    margin-top: -40px; 
+}
+
+/* ==========================================================================
+   IMPORTANT! YOU MUST UPDATE GazeMechanics.js AFTER CHANGING THESE VALUES!
+   
+   In gcs/GazeMechanics.js, inside the PupilController class, update the
+   offsets to match the new dimensions:
+   
+   maxHorizontalOffset = (eye.width / 2) - (pupil.width / 2)
+                       = (104 / 2) - (36 / 2) = 52 - 18 = 34
+                       
+   maxVerticalOffset   = (eye.height / 2) - (pupil.height / 2)
+                       = (84 / 2) - (36 / 2) = 42 - 18 = 24
+   ==========================================================================
+*/
+.eye {
+    position: relative;
+    width: 104px; /* Adjusted size */
+    height: 84px; /* Adjusted size */
+    background: radial-gradient(circle at center, #f5f5f5, #bbb);
+    border: 3px solid #666;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2), inset 5px 5px 10px rgba(255,255,255,0.6);
+}
+
+.pupil {
+    position: absolute;
+    width: 36px; /* Adjusted size */
+    height: 36px; /* Adjusted size */
+    background: radial-gradient(circle at 30% 30%, #444, #000);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0,0,0,0.7);
+    top: calc(50% - 18px); /* Adjusted for new pupil height */
+    left: calc(50% - 18px); /* Adjusted for new pupil width */
+    transform: translate(0px, 0px);
+}
+
+/* --- Sorting Game Section --- */
+#sorting-game-container {
+    height: 35vh;
+    position: relative;
+    box-sizing: border-box;
+    background-color: #ccc; /* Match the body background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#instructionsContainer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    text-align: center;
+    z-index: 20;
+    color: #333;
+    font-size: 0.5rem; /* Changed from 1.2rem */
+    font-weight: bold;
+}
+
+/* --- Drop Zones --- */
+.drop-zone {
+    position: fixed; /* Position relative to the viewport */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%);
+    width: 15%; /* Narrower width */
+    height: 60vh; /* Taller height */
+    background-color: #ddd;
+    border: 2px dashed #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+    box-sizing: border-box;
+    color: #555; /* Darker text */
+    font-size: 2rem;
+    font-weight: bold;
+    z-index: 5;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#leftDropZone {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-left: none;
+}
+
+#rightDropZone {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-right: none;
+}
+
+.drop-zone.highlight {
+    background-color: rgba(255, 255, 0, 0.4);
+    border-style: solid;
+}
+
+.counter {
+    font-size: 2.5rem;
+    display:none;
+}
+
+#deckContainer {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    position: absolute;
+    width: 160px;
+    height: 240px;
+    background-color: #3f8cff;
+    border: 3px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.card.revealed {
+    background-color: white;
+    transform: scale(1.1);
+    z-index: 1000;
+    color: #333;
+}
+
+
+/* --- Modals, Overlays, and Control Panel --- */
+
+.modal-overlay, .overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    color: #333;
+    padding: 25px 35px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.modal-content input[type="text"] {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: 80%;
+    font-size: 1rem;
+}
+
+.modal-content button {
+    display: block;
+    margin: 15px auto 5px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    background-color: #4CAF50; /* Green */
+    transition: background-color 0.2s;
+}
+
+.modal-content button:hover {
+    background-color: #5cb860;
+}
+
+#testSessionButton {
+    background-color: #ffc107; /* Yellow */
+    color: #333;
+}
+#testSessionButton:hover {
+    background-color: #ffca2c;
+}
+
+.error-text {
+    color: #d9534f;
+    height: 1em;
+    margin-top: 10px;
+}
+
+.overlay-content {
+    color: white;
+    font-size: 4rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+}
+
+#controlPanel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 700px;
+    z-index: 1500;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
+
+#controlPanelHeader {
+    cursor: pointer;
+    padding: 10px;
+    text-align: center;
+    background: #222;
+    color: #fff;
+    font-weight: bold;
+}
+
+#controlPanelContent {
+    padding: 15px 20px;
+    background: #333;
+    color: #fff;
+}
+
+.condition-container, .toggle-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #555;
+    margin-bottom: 15px;
+}
+.toggle-container {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.toggle-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 10px;
+}
+
+.toggle-item span {
+    margin-right: 8px;
+}
+
+#gazeStatus {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #555;
+    color: #eee;
+    font-family: monospace;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: 0.2s;
+    border-radius: 20px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.2s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #2196F3;
+}
+input:checked + .slider:before {
+    transform: translateX(20px);
+}

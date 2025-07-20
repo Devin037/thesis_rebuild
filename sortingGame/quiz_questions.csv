@@ -1,0 +1,18 @@
+question,correct_answer,round,difficulty
+The capital of France is Paris.,TRUE,1,easy
+A square has five sides.,FALSE,1,easy
+The Pacific Ocean is the largest ocean on Earth.,TRUE,1,easy
+Humans have four lungs.,FALSE,1,easy
+Mount Everest is the tallest mountain in the world.,TRUE,1,medium
+The sun revolves around the Earth.,FALSE,1,medium
+Bananas are berries.,TRUE,1,medium
+The chemical symbol for water is H2O.,TRUE,1,medium
+The Great Wall of China is visible from space with the naked eye.,FALSE,1,hard
+The capital of Japan is Tokyo.,TRUE,1,hard
+Mitochondria are the powerhouse of the cell.,TRUE,1,hard
+The speed of light is faster than the speed of sound.,TRUE,1,medium
+Sharks are mammals.,FALSE,1,easy
+The human skeleton is made of 206 bones.,TRUE,1,medium
+The planet Mars is also known as the Red Planet.,TRUE,1,easy
+This is a test question.,TRUE,test,easy
+This is another test question.,FALSE,test,easy
